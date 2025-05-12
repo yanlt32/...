@@ -21,7 +21,7 @@ if (fs.existsSync(publicPath)) {
   app.use(express.static(publicPath));
 
   app.get('/', (req, res) => {
-    res.sendFile(path.join(publicPath, 'index.html'));
+    res.sendFile(path.join(publicPath, 'loginormal.html'));
   });
 } else {
   // Caso a pasta public/index.html não exista
