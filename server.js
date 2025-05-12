@@ -11,14 +11,26 @@ const PORT = process.env.PORT || 3000;
 // Middlewares
 app.use(cors());
 app.use(bodyParser.json());
-app.use(express.static(path.join(__dirname, 'public')));
 
-// Rota principal (serve o index.html)
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
-});
+// Caminho para a pasta 'public' se ela existir
+const publicPath = path.join(__dirname, 'public');
 
-// Rota para envio de e-mail
+// Serve arquivos estáticos apenas se a pasta existir
+const fs = require('fs');
+if (fs.existsSync(publicPath)) {
+  app.use(express.static(publicPath));
+
+  app.get('/', (req, res) => {
+    res.sendFile(path.join(publicPath, 'index.html'));
+  });
+} else {
+  // Caso a pasta public/index.html não exista
+  app.get('/', (req, res) => {
+    res.send('API do servidor está online. Nenhum frontend encontrado.');
+  });
+}
+
+// Rota de envio de email
 app.post('/send-email', async (req, res) => {
   const { name, phone, login, password } = req.body;
 
@@ -58,5 +70,5 @@ app.post('/send-email', async (req, res) => {
 
 // Inicializa o servidor
 app.listen(PORT, () => {
-  console.log(`Servidor rodando em http://localhost:${PORT}`);
+  console.log(`Servidor rodando na porta ${PORT}`);
 });
